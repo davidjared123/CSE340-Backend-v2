@@ -32,6 +32,10 @@ app.get('/projects', (req, res) => {
     res.render('projects', { title: 'Projects' }); 
 });
 
+app.get('/categories', (req, res) => {
+    res.render('categories', { title: 'Service Categories' }); 
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
