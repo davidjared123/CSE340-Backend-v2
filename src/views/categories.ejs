@@ -3,10 +3,13 @@
 <h1><%= title %></h1>
 <p>Here are our service project categories:</p>
 <ul>
-    <li>Environmental</li>
-    <li>Educational</li>
-    <li>Community Service</li>
-    <li>Health and Wellness</li>
+    <% if (typeof categories !== 'undefined' && categories.length > 0) { %>
+        <% categories.forEach(category => { %>
+            <li><%= category.name %></li>
+        <% }) %>
+    <% } else { %>
+        <li>No categories available.</li>
+    <% } %>
 </ul>
 
 <%- include('partials/footer') %>

@@ -2,7 +2,8 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-
+import { getAllProjects } from './src/models/projects.js';
+import { getAllCategories } from './src/models/categories.js';
 dotenv.config();
 
 // Configuración de rutas base (necesario en ESM)
@@ -28,12 +29,25 @@ app.get('/organizations', (req, res) => {
     res.render('organizations', { title: 'Organizations' }); 
 });
 
-app.get('/projects', (req, res) => {
-    res.render('projects', { title: 'Projects' }); 
+app.get('/projects', async (req, res) => {
+    try {
+        const projects = await getAllProjects();
+        console.log('Projects retrieved:', projects);
+        res.render('projects', { title: 'Projects', projects }); 
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
-app.get('/categories', (req, res) => {
-    res.render('categories', { title: 'Service Categories' }); 
+app.get('/categories', async (req, res) => {
+    try {
+        const categories = await getAllCategories();
+        res.render('categories', { title: 'Service Categories', categories }); 
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 app.listen(PORT, () => {

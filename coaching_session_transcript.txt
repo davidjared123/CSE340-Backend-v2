@@ -1,0 +1,57 @@
+=== CSE 340 Coaching Session Transcript ===
+
+AI: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say 'I don't know' or 'I made a mistake.' That's the fastest way we'll learn today.
+I'm really excited to review your first backend assignment with you. To get us started, could you please confirm your name?
+
+USER: ok soy david pero hagamos esto en spanish porfa 
+
+AI: ¡Hola David! Claro que sí, podemos continuar en español con mucho gusto. 
+Para empezar con nuestro primer tema, el Enrutamiento en Express, ¿podrías pegarme aquí un fragmento de código de tu archivo server.js donde definas una de tus rutas y explicarme brevemente qué es lo que hace?
+
+USER: 
+import express from 'express';
+// ... (código server.js completo omitido por brevedad) ...
+app.get('/categories', (req, res) => {
+    res.render('categories', { title: 'Service Categories' }); 
+});
+
+AI: ¡Excelente! Gracias por compartir todo tu archivo server.js.
+Veo que has definido varias rutas usando el método app.get(). Centrándonos por ejemplo en la ruta de categorías:
+¿Podrías explicarme con tus propias palabras qué representan los parámetros req y res, y qué es exactamente lo que está haciendo la función res.render() dentro de ese bloque?
+
+USER: req es la peticion al servidor y res es la respuesta que le queremos enviar al usuario 
+
+AI: ¡Exacto! Tienes muy claro el concepto de petición (request) y respuesta (response). 
+Para terminar de entender esta línea, ¿qué está haciendo específicamente la función res.render('categories', { title: 'Service Categories' }) para construir esa respuesta que finalmente ve el usuario en su navegador?
+
+USER: bueno entiendo que busca renderizar la parte que se esta pidiento en este caso en el archivo que concuerde de las vistas comn el titulo de categories y busca en title el renglon de los servicios sus categorias y renderiza en el DOM o sitio o inyecta el codigo por asi decirlo 
+
+AI: ¡Muy bien explicado! Tal como dices, busca el archivo EJS, inyecta la variable title y le devuelve todo el código HTML listo al navegador. 
+Con esto pasamos a nuestro segundo tema: Principios del Lenguaje JavaScript. En las rutas que compartiste de tu server.js, veo que utilizaste funciones flecha (arrow functions), como por ejemplo (req, res) => { ... }. 
+¿Podrías decirme qué ventajas tiene o por qué se suele preferir usar funciones flecha en lugar de la palabra clave tradicional function en el desarrollo moderno de JavaScript?
+
+USER: para mi son mas entendibles y claras en la  funcion que se necesita se puede usar como variable y tambien ejecutables de una vez, se puede colocar ejecuciones y todo en menos lienas de codigo 
+
+AI: Es un gran punto; la sintaxis más limpia y concisa de las funciones flecha hace que el código sea mucho más fácil de leer, ¡especialmente cuando se usan como funciones anónimas en las rutas de Express!
+Pasemos a nuestro tercer tema: EJS Partials y Pages. ¿Podrías copiar y pegar aquí el código de uno de tus archivos EJS (como categories.ejs o home.ejs) y explicarme por qué utilizamos la etiqueta <%- include(...) %> para el encabezado y el pie de página, en lugar de simplemente escribir el código HTML de la navegación directamente en cada archivo?
+
+USER: 
+<%- include('partials/header') %>
+<h1><%= title %></h1>
+<%- include('partials/footer') %>
+
+AI: Gracias por compartir ambos archivos. Veo que ambos están estructurados perfectamente y utilizan los partials al inicio y al final. 
+Sin embargo, me faltó escuchar el "por qué" de tu parte. ¿Qué gran ventaja crees que nos da tener ese <%- include('partials/header') %> en lugar de copiar y pegar todo el código de la barra de navegación HTML en cada una de las cuatro páginas de tu sitio?
+
+USER: ok incluso ves el include que lo que hace es inyectar la parte de head el header y todo, ademas de que es interactivo, lo cual no es estatico si no que puede variar segun la peticion al servidor ejemplo si es de un usuario puedo cambiar el titulo segun el usuario sin necesidad de hacerlo manual 
+
+AI: ¡Exactamente! Al ser dinámico, nos permite inyectar variables (como el <%= title %>) dependiendo de la ruta que se esté visitando. Además, nos da una ventaja gigante en mantenimiento.
+Para finalizar nuestra sesión de hoy, pasemos a nuestro cuarto y último tema: Frontend CSS. 
+¿Podrías compartirme un pequeño bloque de código de tu archivo public/css/main.css y explicarme de qué manera ese código específico ayuda a mejorar la apariencia profesional o la accesibilidad de tu proyecto?
+
+USER: 
+(Código CSS compartido)
+alli se controla lo que se muestra segun el dispositivo el responsive y las variables como para los colores sin tener que recordar el codigo 
+
+AI: ¡Totalmente de acuerdo! Las media queries permiten adaptar tu sitio a móviles, y las variables de CSS ahorran un montón de tiempo, además de evitar posibles errores recordando los colores hexadecimales. 
+¡Con esto hemos terminado todos los temas! Has demostrado un gran entendimiento de lo que desarrollaste.
