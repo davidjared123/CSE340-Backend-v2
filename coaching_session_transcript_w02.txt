@@ -1,0 +1,53 @@
+--- CSE340 W02 Coaching Session Transcript ---
+
+AI: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say 'I don't know' or 'I made a mistake.' That's the fastest way we'll learn today.
+Hola David, con mucho gusto asumo este rol para ayudarte a completar tu asignación de Coaching Session.
+Para comenzar con nuestro primer tema (Diseño y Estructura de la Base de Datos Relacional), he estado revisando tu archivo src/setup.sql.
+¿Podrías explicarme brevemente por qué fue necesario crear la tabla intermedia project_categories en lugar de simplemente poner un category_id dentro de la tabla service_projects?
+
+David: Porque en esa tabla es una tabla intermedia para unir los datos y acceder de manera organizada de ambos ademas de porque un proyecto puede tener muchas categorias y una categoria pueede tener muchos proyectos por lo cual es necesario unirlos de esa manera
+
+AI: ¡Exactamente! Has descrito perfectamente la relación de "Muchos a Muchos". Sin esa tabla intermedia, sería imposible organizar esos datos correctamente.
+Para completar este primer tema, ¿podrías pegar aquí el bloque de código SQL de tu archivo src/setup.sql (alrededor de las líneas 46-50) donde creas esa tabla project_categories, y explicarme brevemente qué hace la palabra clave REFERENCES en ese código?
+
+David: aca esta todo: [SQL Snippet included]
+
+AI: ¡Excelente, gracias por compartir todo el código! Está muy bien estructurado.
+Solo nos faltó una pequeña parte para cerrar este primer tema: ¿Podrías explicarme brevemente, con tus propias palabras, qué función cumple la palabra clave REFERENCES que está junto a project_id y category_id al crear la tabla project_categories? (Recuerda, ¡está bien si no estás 100% seguro!)
+
+David: references es la manera como le decimos que el ID de dicha categoria o servicio es el que esta en el ID de la tabla original osea puede ser el primary key su id 
+
+AI: ¡Perfecto! Así es, REFERENCES es la forma de crear una "Llave Foránea" (Foreign Key) para asegurarnos de que no podamos asignar un proyecto a una categoría que no existe.
+Eso cubre nuestro primer tema. Ahora pasemos al Tema 2: Lógica de acceso a datos en el Servidor (Node.js).
+He visto que tienes un archivo llamado src/models/categories.js. ¿Podrías pegar aquí la función getAllCategories de ese archivo y explicarme brevemente por qué es necesario usar la palabra clave async antes de esa función?
+
+David: [Node.js Snippet included]
+
+AI: ¡Gracias por compartir la función!
+Veo el código, pero te faltó responder la pregunta: ¿Por qué crees que es importante usar la palabra clave async en esta función (especialmente cuando se conecte a la base de datos real usando pool.query)?
+
+David: porque espera la respuesta de los datos porque si se ejecuta antes de que lleguen los datos dara error entonces el async es para decirle espera a que tengas los datos y luego ejecutala
+
+AI: ¡Exacto! La base de datos puede tardar unos milisegundos (o segundos) en responder, y el async (junto con el await) hace que el código espere a tener esos datos antes de continuar. ¡Muy bien explicado!
+Eso nos lleva al Tema 3: Lógica del servidor Express y Enrutamiento (Routing).
+En tu archivo server.js, tienes rutas configuradas para manejar las peticiones del usuario. ¿Podrías copiar y pegar aquí el código de tu ruta app.get('/categories', ...) y explicarme brevemente qué función cumple el objeto res (particularmente la parte de res.render) dentro de esa ruta?
+
+David: [Express Snippet included]
+
+AI: ¡Gracias por el código de la ruta!
+Veo cómo estás solicitando los datos con getAllCategories(). Sin embargo, olvidaste responder a mi pregunta: ¿qué hace exactamente la instrucción res.render('categories', ...) en ese bloque de código?
+
+David: la respuestas de la peticion get se va a renderizar en el sitio con la informacion obtenida
+
+AI: ¡Tal cual! Toma la información de la base de datos (que metiste en la variable categories) y se la pasa a la plantilla (vista) para generar el HTML final que verá el usuario. Muy bien.
+Esto nos lleva a nuestro cuarto y último tema: Renderizado en el Cliente (Plantillas EJS).
+Para este tema final, ¿podrías pegar la sección de código de tu archivo src/views/categories.ejs donde haces un "bucle" (loop) para mostrar las categorías, y explicarme la diferencia entre usar <% y <%= dentro de ese código?
+
+David: [EJS Snippet included]
+
+AI: ¡Perfecto, ese es el código exacto!
+Nuevamente, me compartiste el código pero te faltó responder a mi pregunta final: ¿Cuál es la diferencia de uso entre la etiqueta <% (como en la línea 6) y la etiqueta <%= (como en la línea 8) dentro de ese código EJS?
+
+David: el de <% es para ejecutar codigo js dentro de esos y el de <%= es para ya lista como una variable almacenada ya 
+
+AI: ¡Excelente! Así es, `<%` se usa para la lógica de control de JavaScript (como iterar con un `forEach` o hacer un `if`), mientras que `<%=` se usa para "imprimir" o mostrar el valor de una variable directamente en el HTML.
