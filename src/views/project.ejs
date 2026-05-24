@@ -5,5 +5,14 @@
 <p><strong>Date:</strong> <%= project.date.toLocaleDateString() %></p>
 <p><strong>Location:</strong> <%= project.location %></p>
 <p><strong>Partner Organization:</strong> <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a></p>
+<p><strong>Categories:</strong> 
+    <% if (typeof categories !== 'undefined' && categories.length > 0) { %>
+        <% categories.forEach(category => { %>
+            <a href="/category/<%= category.category_id %>"><%= category.name %></a> 
+        <% }) %>
+    <% } else { %>
+        None
+    <% } %>
+</p>
 
 <%- include('partials/footer') %>

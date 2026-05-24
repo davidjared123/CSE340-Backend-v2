@@ -2,7 +2,6 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { getAllCategories } from './src/models/categories.js';
 import appRoutes from './src/routes.js';
 dotenv.config();
 
@@ -31,15 +30,7 @@ app.get('/organizations', (req, res) => {
 
 app.use('/', appRoutes);
 
-app.get('/categories', async (req, res) => {
-    try {
-        const categories = await getAllCategories();
-        res.render('categories', { title: 'Service Categories', categories }); 
-    } catch (error) {
-        console.error('Error fetching categories:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

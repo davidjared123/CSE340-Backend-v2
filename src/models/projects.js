@@ -5,7 +5,10 @@
 const mockProjects = [
     { project_id: 1, title: 'Blood Drive', description: 'Help donate blood.', location: 'Community Center', organization_id: 1, organization_name: 'Red Cross', date: new Date('2026-06-01') },
     { project_id: 2, title: 'Home Build - Lot A', description: 'Build a home for those in need.', location: 'Lot A', organization_id: 2, organization_name: 'Habitat for Humanity', date: new Date('2026-06-10') },
-    { project_id: 3, title: 'Food Sorting', description: 'Sort food for the hungry.', location: 'Food Bank', organization_id: 3, organization_name: 'Local Food Bank', date: new Date('2026-06-05') }
+    { project_id: 3, title: 'Food Sorting', description: 'Sort food for the hungry.', location: 'Food Bank', organization_id: 3, organization_name: 'Local Food Bank', date: new Date('2026-06-05') },
+    { project_id: 4, title: 'Park Cleanup', description: 'Clean the local park.', location: 'City Park', organization_id: 4, organization_name: 'City Parks Dept', date: new Date('2026-06-15') },
+    { project_id: 5, title: 'Reading to Kids', description: 'Read books to children.', location: 'Public Library', organization_id: 5, organization_name: 'Library Friends', date: new Date('2026-06-20') },
+    { project_id: 6, title: 'This should not appear', description: 'Too far in the future.', location: 'Mars', organization_id: 6, organization_name: 'SpaceX', date: new Date('2026-06-25') }
 ];
 
 export async function getAllProjects() {
@@ -26,6 +29,22 @@ export async function getUpcomingProjects(number_of_projects) {
 
 export async function getProjectDetails(id) {
     return mockProjects.find(p => p.project_id === parseInt(id));
+}
+
+export async function getProjectsByCategoryId(category_id) {
+    // Mock implementation
+    const mockProjectCategories = [
+        { project_id: 1, category_id: 1 },
+        { project_id: 2, category_id: 2 },
+        { project_id: 3, category_id: 3 },
+        { project_id: 4, category_id: 1 },
+        { project_id: 5, category_id: 2 },
+        { project_id: 6, category_id: 3 }
+    ];
+    const projectIds = mockProjectCategories
+        .filter(pc => pc.category_id === parseInt(category_id))
+        .map(pc => pc.project_id);
+    return mockProjects.filter(p => projectIds.includes(p.project_id));
 }
 
 /* 
@@ -78,6 +97,24 @@ export async function getProjectDetails(id) {
 //         return result.rows[0];
 //     } catch (error) {
 //         console.error("Error fetching project details:", error);
+//         throw error;
+//     }
+// }
+
+// export async function getProjectsByCategoryId(category_id) {
+//     try {
+//         const query = `
+//             SELECT p.project_id, p.title, p.description, p.date, p.location, p.organization_id, o.name AS organization_name
+//             FROM service_projects p
+//             JOIN project_categories pc ON p.project_id = pc.project_id
+//             JOIN organizations o ON p.organization_id = o.organization_id
+//             WHERE pc.category_id = $1
+//             ORDER BY p.date ASC;
+//         `;
+//         const result = await pool.query(query, [category_id]);
+//         return result.rows;
+//     } catch (error) {
+//         console.error("Error fetching projects by category:", error);
 //         throw error;
 //     }
 // }
