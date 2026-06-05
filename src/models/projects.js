@@ -47,8 +47,60 @@ export async function getProjectsByCategoryId(category_id) {
     return mockProjects.filter(p => projectIds.includes(p.project_id));
 }
 
+/**
+ * Updates an existing project in the mock database.
+ * @param {string|number} project_id - The ID of the project to update.
+ * @param {string} title - New title.
+ * @param {string} description - New description.
+ * @param {string} location - New location.
+ * @param {string} date - New date.
+ * @param {string|number} organization_id - New organization ID.
+ * @returns {number} The project ID of the updated project.
+ */
+export async function updateProject(project_id, title, description, location, date, organization_id) {
+    const project = mockProjects.find(p => p.project_id === parseInt(project_id));
+    if (!project) {
+        throw new Error('Failed to update project: Project not found');
+    }
+    project.title = title;
+    project.description = description;
+    project.location = location;
+    project.date = new Date(date);
+    project.organization_id = parseInt(organization_id);
+
+    // Update organization name in the mock database
+    const orgNames = {
+        1: 'Red Cross',
+        2: 'Habitat for Humanity',
+        3: 'Local Food Bank'
+    };
+    project.organization_name = orgNames[organization_id] || 'Unknown Organization';
+
+    return project.project_id;
+}
+
 /* 
 // --- ACTUAL DATABASE IMPLEMENTATION ---
+// export async function updateProject(project_id, title, description, location, date, organization_id) {
+//     try {
+//         const query = `
+//             UPDATE service_projects
+//             SET title = $1, description = $2, location = $3, date = $4, organization_id = $5
+//             WHERE project_id = $6
+//             RETURNING project_id;
+//         `;
+//         const queryParams = [title, description, location, date, organization_id, project_id];
+//         const result = await pool.query(query, queryParams);
+//         if (result.rows.length === 0) {
+//             throw new Error('Failed to update project');
+//         }
+//         return result.rows[0].project_id;
+//     } catch (error) {
+//         console.error("Error updating project in database:", error);
+//         throw error;
+//     }
+// }
+//
 // import pool from '../database/index.js'; // Adjust path to your database connection module
 
 // export async function getAllProjects() {

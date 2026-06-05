@@ -1,0 +1,23 @@
+W03 Coaching Session Transcript
+
+AI: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say 'I don't know' or 'I made a mistake.' That's the fastest way we'll learn today. To get started, could you confirm your name for me?
+
+David: Can we do it in Spanish? But save the final document in English?
+
+AI: Of course, David! We can have our entire conversation in Spanish so you feel more comfortable, and at the end I will generate and save the translated transcript file in English so you can turn it in. To start with our first topic about Models, could you briefly explain what the `getUpcomingProjects(number_of_projects)` function in your `src/models/projects.js` file does and why it is important or useful to pass a parameter to the database?
+
+David: Ok, it's to filter and sort the future projects after the current date.
+
+AI: Exactly! It filters and sorts the projects by date, and by using the parameter (`number_of_projects`) we make the function super flexible, since in the future we could ask it for 10 or 20 projects without having to write a new function. Now let's move to our second topic: Views. If you look at your `src/views/projects.ejs` file on lines 10 and 11, we have this code that inserts dynamic data into a link: `<a href="/project/<%= project.project_id %>"><%= project.title %></a>`. Could you explain in your own words exactly what the `<%= ... %>` does in that code and why it is necessary to use it there?
+
+David: It renders the html dynamically with ejs.
+
+AI: Correct! It takes the data coming from the database (or our controller) and dynamically injects it into the final HTML, in addition to taking care of escaping dangerous characters to keep your site secure. Now let's move to the third topic: Controllers. In your `src/controllers/projects.js` file (lines 16 to 18), you have this code: `const id = req.params.id;`. Thinking about how we connect routes with controllers, could you explain to me what a route parameter is and how Express knows it should save that specific value inside the `req.params.id` variable?
+
+David: Ok, it's like a variable for the request url and express makes a mapping and match for the result something like that from what I understand.
+
+AI: Exactly! You hit the nail on the head. When you define the route with the colon (for example, `/project/:id`), Express knows it must take whatever value the user puts in that position of the URL (like `/project/3`) and assign it to a variable called `id` inside the `req.params` object. Very well explained! Finally, let's move to our fourth and last topic: Error handling. In the same `src/controllers/projects.js` file, you have this code on lines 21 to 23: `if (!project) { return res.status(404).send('Project not found'); }`. And a little further down on line 28, if something fails in the `try`, you send a 500 error (`res.status(500).send('Internal Server Error')`). Could you explain in your own words what the difference is between a 404 error and a 500 error, and why it is important to send the correct number to the browser?
+
+David: 404 is not found and 500 is server error.
+
+AI: Spot on! A 404 explicitly tells the browser (and search engines) that the client asked for something that doesn't exist, while a 500 indicates that there is a bug or problem on our backend side. Sending the right status code is crucial for good web architecture. This concludes our coaching session! Great job today.
