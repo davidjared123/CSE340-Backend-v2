@@ -1,25 +1,57 @@
 import { body, validationResult } from 'express-validator';
 
 /**
- * Validation rules for creating a new organization
+ * Validation rules for creating and editing an organization
  */
-export const newOrganizationRules = [
-    // Validate Organization Name
+export const organizationValidationRules = [
     body('name')
         .trim()
         .notEmpty().withMessage('Organization Name is required.'),
-    
-    // Validate Description
     body('description')
         .trim()
         .notEmpty().withMessage('Description is required.'),
-    
-    // Validate Contact Email
     body('contactEmail')
         .trim()
         .notEmpty().withMessage('Contact Email is required.')
         .isEmail().withMessage('A valid email address is required.')
         .normalizeEmail()
+];
+
+// Alias for backwards compatibility
+export const newOrganizationRules = organizationValidationRules;
+
+/**
+ * Validation rules for creating and editing a service project
+ */
+export const projectValidationRules = [
+    body('title')
+        .trim()
+        .notEmpty().withMessage('Project Title is required.'),
+    body('description')
+        .trim()
+        .notEmpty().withMessage('Description is required.'),
+    body('location')
+        .trim()
+        .notEmpty().withMessage('Location is required.'),
+    body('date')
+        .trim()
+        .notEmpty().withMessage('Date is required.')
+        .isISO8601().withMessage('Please enter a valid date.'),
+    body('organizationId')
+        .trim()
+        .notEmpty().withMessage('Organization is required.')
+        .isInt().withMessage('Please select a valid organization.')
+];
+
+/**
+ * Validation rules for creating and editing a category
+ */
+export const categoryValidationRules = [
+    body('name')
+        .trim()
+        .notEmpty().withMessage('Category name is required.')
+        .isLength({ min: 3 }).withMessage('Category name must be at least 3 characters long.')
+        .isLength({ max: 100 }).withMessage('Category name cannot exceed 100 characters.')
 ];
 
 /**
@@ -33,8 +65,8 @@ export const validate = (req, res, next) => {
             req.flash('error', error.msg);
         });
         
-        // Redirect back to the new-organization form page
-        return res.redirect('/new-organization');
+        // Redirect back to the page from which the form was submitted
+        return res.redirect(req.get('Referer') || '/');
     }
     next();
 };

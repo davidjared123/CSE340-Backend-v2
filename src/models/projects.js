@@ -79,8 +79,59 @@ export async function updateProject(project_id, title, description, location, da
     return project.project_id;
 }
 
+/**
+ * Creates a new project in the mock database.
+ * @param {string} title - The title.
+ * @param {string} description - The description.
+ * @param {string} location - The location.
+ * @param {string} date - The date.
+ * @param {string|number} organization_id - The organization ID.
+ * @returns {number} The newly created project ID.
+ */
+export async function createProject(title, description, location, date, organization_id) {
+    const id = mockProjects.length + 1;
+    const newProject = {
+        project_id: id,
+        title,
+        description,
+        location,
+        date: new Date(date),
+        organization_id: parseInt(organization_id)
+    };
+
+    // Update organization name in the mock database
+    const orgNames = {
+        1: 'Red Cross',
+        2: 'Habitat for Humanity',
+        3: 'Local Food Bank'
+    };
+    newProject.organization_name = orgNames[organization_id] || 'Unknown Organization';
+
+    mockProjects.push(newProject);
+    return id;
+}
+
 /* 
 // --- ACTUAL DATABASE IMPLEMENTATION ---
+// export async function createProject(title, description, location, date, organization_id) {
+//     try {
+//         const query = `
+//             INSERT INTO service_projects (title, description, location, date, organization_id)
+//             VALUES ($1, $2, $3, $4, $5)
+//             RETURNING project_id;
+//         `;
+//         const queryParams = [title, description, location, date, organization_id];
+//         const result = await pool.query(query, queryParams);
+//         if (result.rows.length === 0) {
+//             throw new Error('Failed to create project');
+//         }
+//         return result.rows[0].project_id;
+//     } catch (error) {
+//         console.error("Error creating project in database:", error);
+//         throw error;
+//     }
+// }
+//
 // export async function updateProject(project_id, title, description, location, date, organization_id) {
 //     try {
 //         const query = `

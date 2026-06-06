@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+<main>
+    <h1><%= organization.name %></h1>
+    <div class="organizations">
+        <img src="/images/<%= organization.logoFilename || 'placeholder-logo.png' %>" alt="<%= organization.name %> Logo" style="width: 150px;">
+        <p><strong>Description:</strong> <%= organization.description || 'No description available.' %></p>
+        <p><strong>Contact Email:</strong> <a href="mailto:<%= organization.contactEmail || '' %>"><%= organization.contactEmail || 'N/A' %></a></p>
+    </div>
+
+    <p><a href="/edit-organization/<%= organization.organization_id %>">Edit Organization Details</a></p>
+</main>
+<%- include('partials/footer') %>

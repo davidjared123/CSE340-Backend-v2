@@ -51,6 +51,36 @@ const getAllOrganizations = async () => {
     return mockOrganizations;
 };
 
+/**
+ * Retrieves details for a specific organization.
+ * @param {string|number} id - The organization ID.
+ * @returns {Object} The organization details.
+ */
+const getOrganizationDetails = async (id) => {
+    return mockOrganizations.find(o => o.organization_id === parseInt(id));
+};
+
+/**
+ * Updates an organization in the mock database.
+ * @param {string|number} organization_id - Organization ID.
+ * @param {string} name - Name of organization.
+ * @param {string} description - Description.
+ * @param {string} contactEmail - Contact email.
+ * @param {string} logoFilename - Logo filename.
+ * @returns {number} The updated organization ID.
+ */
+const updateOrganization = async (organization_id, name, description, contactEmail, logoFilename) => {
+    const org = mockOrganizations.find(o => o.organization_id === parseInt(organization_id));
+    if (!org) {
+        throw new Error('Failed to update organization: Organization not found');
+    }
+    org.name = name;
+    org.description = description;
+    org.contactEmail = contactEmail;
+    org.logoFilename = logoFilename || 'placeholder-logo.png';
+    return org.organization_id;
+};
+
 /*
 // --- ACTUAL DATABASE IMPLEMENTATION ---
 // export async function getAllOrganizations() {
@@ -63,6 +93,37 @@ const getAllOrganizations = async () => {
 //         throw error;
 //     }
 // }
+//
+// export async function getOrganizationDetails(id) {
+//     try {
+//         const query = `SELECT * FROM organization WHERE organization_id = $1`;
+//         const result = await pool.query(query, [id]);
+//         return result.rows[0];
+//     } catch (error) {
+//         console.error("Error fetching organization details:", error);
+//         throw error;
+//     }
+// }
+//
+// export async function updateOrganization(organization_id, name, description, contactEmail, logoFilename) {
+//     try {
+//         const query = `
+//             UPDATE organization
+//             SET name = $1, description = $2, contact_email = $3, logo_filename = $4
+//             WHERE organization_id = $5
+//             RETURNING organization_id;
+//         `;
+//         const queryParams = [name, description, contactEmail, logoFilename, organization_id];
+//         const result = await pool.query(query, queryParams);
+//         if (result.rows.length === 0) {
+//             throw new Error('Failed to update organization');
+//         }
+//         return result.rows[0].organization_id;
+//     } catch (error) {
+//         console.error("Error updating organization in database:", error);
+//         throw error;
+//     }
+// }
 */
 
-export { createOrganization, getAllOrganizations };
+export { createOrganization, getAllOrganizations, getOrganizationDetails, updateOrganization };

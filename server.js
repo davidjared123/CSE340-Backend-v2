@@ -42,10 +42,6 @@ app.get('/', (req, res) => {
     res.render('home', { title: 'Home' }); 
 });
 
-app.get('/organizations', (req, res) => {
-    res.render('organizations', { title: 'Organizations' }); 
-});
-
 app.use('/', appRoutes);
 
 

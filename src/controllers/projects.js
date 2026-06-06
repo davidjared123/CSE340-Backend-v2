@@ -1,4 +1,4 @@
-import { getUpcomingProjects, getProjectDetails, updateProject } from '../models/projects.js';
+import { getUpcomingProjects, getProjectDetails, updateProject, createProject } from '../models/projects.js';
 import { getCategoriesByProjectId } from '../models/categories.js';
 import { getAllOrganizations } from '../models/organizations.js';
 
@@ -64,5 +64,36 @@ export async function processEditProjectForm(req, res) {
         console.error('Error updating project:', error);
         req.flash('error', 'Failed to update project.');
         res.redirect(`/edit-project/${req.params.id}`);
+    }
+}
+
+/**
+ * Controller to show the create project form.
+ */
+export async function showNewProjectForm(req, res) {
+    try {
+        const organizations = await getAllOrganizations();
+        res.render('new-project', { title: 'Add New Project', organizations });
+    } catch (error) {
+        console.error('Error showing new project form:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+/**
+ * Controller to handle creation of a new project.
+ */
+export async function processNewProjectForm(req, res) {
+    try {
+        const { title, description, location, date, organizationId } = req.body;
+        
+        const projectId = await createProject(title, description, location, date, organizationId);
+        
+        req.flash('success', 'Project created successfully!');
+        res.redirect(`/project/${projectId}`);
+    } catch (error) {
+        console.error('Error creating project:', error);
+        req.flash('error', 'Failed to create project.');
+        res.redirect('/new-project');
     }
 }

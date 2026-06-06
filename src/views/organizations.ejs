@@ -2,10 +2,20 @@
 
 <h1><%= title %></h1>
 <p>Here are our partner organizations:</p>
-<div class="organizations">
-    <!-- Image paths relative to root /images -->
-    <img src="/images/logo.png" alt="Organization Logo" style="width: 150px;">
-    <p>We work with great partners.</p>
+
+<div class="organizations-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+    <% if (typeof organizations !== 'undefined' && organizations.length > 0) { %>
+        <% organizations.forEach(org => { %>
+            <div class="organizations" style="margin-top: 0;">
+                <a href="/organization/<%= org.organization_id %>" style="text-decoration: none; color: inherit;">
+                    <img src="/images/<%= org.logoFilename || 'placeholder-logo.png' %>" alt="<%= org.name %> Logo" style="width: 150px;">
+                    <h3><%= org.name %></h3>
+                </a>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No organizations registered yet.</p>
+    <% } %>
 </div>
 
 <p><a href="/new-organization">Add a new organization</a></p>
