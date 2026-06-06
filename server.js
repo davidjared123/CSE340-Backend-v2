@@ -34,11 +34,13 @@ app.use(session({
 // Use flash message middleware
 app.use(flash);
 
-// Make isLoggedIn and NODE_ENV available in EJS templates
+// Make isLoggedIn, user, and NODE_ENV available in EJS templates
 app.use((req, res, next) => {
     res.locals.isLoggedIn = false;
+    res.locals.user = null;
     if (req.session && req.session.user) {
         res.locals.isLoggedIn = true;
+        res.locals.user = req.session.user;
     }
     res.locals.NODE_ENV = process.env.NODE_ENV || 'development';
     next();

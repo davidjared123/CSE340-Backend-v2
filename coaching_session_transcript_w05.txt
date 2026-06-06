@@ -1,0 +1,90 @@
+Coaching Session Transcript - Week 05
+Student: David Perez
+Date: 2026-06-06
+
+Coach: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say 'I don't know' or 'I made a mistake.' That's the fastest way we'll learn today.
+
+Hola, David Perez. Como tu mentor y coach de aprendizaje, quiero asegurarte que este es un espacio seguro para aprender, discutir tus decisiones de diseño y resolver cualquier duda sin presiones. 
+
+Para comenzar con nuestra sesión de hoy y abordar el primer tema (Registro y Hashing de contraseñas), ¿podrías confirmarme tu nombre completo y contarme brevemente cómo te has sentido trabajando con el hashing de contraseñas en esta semana?
+
+David: david perez, me he sentido muy bien entiendo un poco la importancia de esto para la seguridad del sitio
+
+Coach: ¡Qué bueno escuchar eso, David! Es fundamental comprender por qué hacemos esto para proteger a las personas que usan nuestro sistema. Para profundizar en el primer tema (Registro y Hashing de contraseñas), analicemos tu código. En el archivo users.js (controlador), dentro de la función processUserRegistrationForm, escribiste estas líneas:
+```javascript
+const saltRounds = 10;
+const passwordHash = await bcrypt.hash(password, saltRounds);
+
+await createUser(name, email, passwordHash);
+```
+¿Podrías explicarme con tus propias palabras qué hace esa función bcrypt.hash() y por qué es tan importante para la seguridad de la base de datos almacenar ese resultado en lugar de la contraseña tal como la escribe el usuario?
+
+David: el bcrypt.hash convierte la contraseña que ingresamos en texto plano en un hash que es un conjunto de caracteres ilegibles para que asi aunque sea interceptada no tenga sentido y no se pueda recuperar
+
+Coach: ¡Excelente explicación, David! Eso es exactamente lo que hace: genera una representación irreversible de la contraseña para proteger la información del usuario en caso de que alguien acceda a la base de datos de manera no autorizada. Solo una última pregunta sobre este fragmento antes de pasar al siguiente tema: ¿Qué papel juega la variable saltRounds = 10 que le pasamos a la función de hash?
+
+David: es el numero de iteraciones o combinaciones de este hash, lo cual es para que si un atacante intente tiene que probar millones de combinaciones de este hash pero para el usuario que tiene la contraseña es inperceptible se usa 10 porque es un standart entre seguridad y velocidad para el servidor
+
+Coach: ¡Impresionante, David! Tienes muy claro cómo funciona el costo de procesamiento de bcrypt para contrarrestar ataques de fuerza bruta. Ahora pasemos al segundo tema: Login y Sesiones. En tu archivo users.js (controlador), en la función processLoginForm, utilizas el siguiente código para gestionar el inicio de sesión exitoso:
+```javascript
+const user = await authenticateUser(email, password);
+if (user) {
+    // Store user info in session
+    req.session.user = user;
+    req.flash('success', 'Login successful!');
+    res.redirect('/dashboard');
+}
+```
+¿Podrías explicarme qué es una sesión de servidor, para qué sirve la línea req.session.user = user, y cómo ayuda a que la aplicación "recuerde" al usuario en futuras páginas sin que tenga que iniciar sesión de nuevo en cada clic?
+
+David: porque si no me equivoco estamos guardando el req.session.user un la variabla useer osea que es igual esa sesion del servidor a la que tenemos localmente lo que ayuda que si cambiamos de pagina recuerde o pueda decir es el mismo usuario que ingreso
+
+Coach: ¡Exacto! Guardamos el objeto del usuario que retorna el modelo en la sesión (`req.session.user`) para que el servidor recuerde quién es en cada petición posterior. Para complementar este tema y entender el mecanismo completo, ¿cómo hace el navegador web (el cliente) para identificarse ante el servidor en cada clic y que el servidor sepa cuál es su sesión correspondiente? (Pista: tiene que ver con algo que se guarda en el navegador).
+
+David: creo que usualmente se usan las cookies
+
+Coach: ¡Perfecto, David! Así es. El servidor crea una cookie (generalmente llamada `connect.sid` en Express) que contiene un identificador único de sesión. El navegador guarda esta cookie y la envía automáticamente en cada petición posterior, permitiendo al servidor asociar esa petición con los datos almacenados en su memoria.
+
+Ahora pasemos al tercer tema: **Middleware de Acceso Protegido**.
+
+En tu archivo [users.js (controlador)](file:///Users/davidperez/Documents/BYU/CSE340-Backend-v2/src/controllers/users.js#L85-L95), implementaste el middleware `requireLogin`:
+
+```javascript
+export const requireLogin = (req, res, next) => {
+    if (!req.session || !req.session.user) {
+        req.flash('error', 'You must be logged in to access that page.');
+        return res.redirect('/login');
+    }
+    next();
+};
+```
+
+David: es como dice ya termine de validarr con exito next()
+
+Coach: ¡Exacto! `next()` le dice a Express que este middleware terminó su trabajo con éxito y que puede continuar al siguiente middleware o a la función que maneja la ruta. Si se te olvidara incluir `next()`, la petición del usuario se quedaría colgada en el navegador (cargando indefinidamente) sin recibir ninguna respuesta.
+
+Ahora pasemos al cuarto y último tema: **Vistas Protegidas y Navegación**.
+
+En tu archivo [dashboard.ejs (vista)](file:///Users/davidperez/Documents/BYU/CSE340-Backend-v2/src/views/dashboard.ejs#L10-L12), agregaste este bloque condicional:
+
+```html
+<% if (user && user.role_name === 'admin') { %>
+    <p><a href="/users">Manage Users</a></p>
+<% } %>
+```
+
+¿Por qué es necesario tener tanto esta condición en la vista EJS para ocultar el enlace, como el middleware `requireRole('admin')` protegiendo la ruta `/users` en el archivo [routes.js](file:///Users/davidperez/Documents/BYU/CSE340-Backend-v2/src/routes.js#L84)? ¿Qué podría pasar si solo ocultaras el enlace en la vista pero no protegieras la ruta en el servidor?
+
+David: aca <% if (user && user.role_name === 'admin') { %>
+    <p><a href="/users">Manage Users</a></p>
+<% } %> muestra solamente a los administradores y la defenza verdadera es requireRole('admin') que no puedo ingresar a estos usuarios y administrar si no tengo el rol de admin
+
+Coach: ¡Es una respuesta perfecta, David! Tienes toda la razón. El EJS es para mejorar la experiencia de usuario (UX) ocultando opciones que no le sirven, pero la seguridad verdadera (la defensa de backend) ocurre en el servidor a través del middleware `requireRole('admin')`. Si un usuario malintencionado simplemente escribiera la URL `/users` en el navegador, la vista condicional no lo detendría, pero el middleware sí lo redirigirá y bloqueará el acceso.
+
+Con esto completamos los cuatro temas requeridos para la sesión de hoy:
+1. **Registro y Hashing de contraseñas** (explicaste bcrypt.hash y salt rounds).
+2. **Login y Sesiones** (detallaste `req.session.user` y el uso de cookies en el navegador).
+3. **Middleware de Acceso Protegido** (describiste el rol de `next()` en el flujo de Express).
+4. **Vistas Protegidas y Navegación** (explicaste la diferencia entre ocultar un enlace en la interfaz de usuario y la defensa real en el servidor).
+
+¡Has hecho un excelente trabajo demostrando un entendimiento sólido de los conceptos de autenticación, autorización y seguridad backend! He guardado la transcripción completa de nuestra sesión en el archivo `coaching_session_transcript_w05.txt` para que puedas descargarla y subirla a Canvas para tu entrega. ¡Felicidades!

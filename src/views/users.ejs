@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+<main>
+    <h1><%= title %></h1>
+    <p>Here are all the users registered in the system:</p>
+
+    <ul>
+        <% if (typeof users !== 'undefined' && users.length > 0) { %>
+            <% users.forEach(userRecord => { %>
+                <li>
+                    <strong><%= userRecord.name %></strong> - <%= userRecord.email %> (Role: <em><%= userRecord.role_name %></em>)
+                </li>
+            <% }) %>
+        <% } else { %>
+            <li>No users registered.</li>
+        <% } %>
+    </ul>
+    
+    <p><a href="/dashboard">Back to Dashboard</a></p>
+</main>
+<%- include('partials/footer') %>

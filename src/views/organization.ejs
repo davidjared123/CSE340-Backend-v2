@@ -7,6 +7,8 @@
         <p><strong>Contact Email:</strong> <a href="mailto:<%= organization.contactEmail || '' %>"><%= organization.contactEmail || 'N/A' %></a></p>
     </div>
 
-    <p><a href="/edit-organization/<%= organization.organization_id %>">Edit Organization Details</a></p>
+    <% if (user && user.role_name === 'admin') { %>
+        <p><a href="/edit-organization/<%= organization.organization_id %>">Edit Organization Details</a></p>
+    <% } %>
 </main>
 <%- include('partials/footer') %>
