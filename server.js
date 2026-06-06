@@ -34,6 +34,16 @@ app.use(session({
 // Use flash message middleware
 app.use(flash);
 
+// Make isLoggedIn and NODE_ENV available in EJS templates
+app.use((req, res, next) => {
+    res.locals.isLoggedIn = false;
+    if (req.session && req.session.user) {
+        res.locals.isLoggedIn = true;
+    }
+    res.locals.NODE_ENV = process.env.NODE_ENV || 'development';
+    next();
+});
+
 // Servir archivos estáticos (CSS/Imágenes)
 app.use(express.static(path.join(__dirname, 'public')));
 

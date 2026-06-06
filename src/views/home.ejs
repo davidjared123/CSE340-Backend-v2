@@ -3,4 +3,8 @@
 <h1>Welcome to <%= title %></h1>
 <p>This is the home page of the application.</p>
 
+<% if (isLoggedIn) { %>
+    <p><a href="/dashboard">My Dashboard</a></p>
+<% } %>
+
 <%- include('partials/footer') %>

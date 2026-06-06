@@ -1,4 +1,5 @@
 import { body, validationResult } from 'express-validator';
+import { getUserByEmail } from '../models/users.js';
 
 /**
  * Validation rules for creating and editing an organization
@@ -52,6 +53,31 @@ export const categoryValidationRules = [
         .notEmpty().withMessage('Category name is required.')
         .isLength({ min: 3 }).withMessage('Category name must be at least 3 characters long.')
         .isLength({ max: 100 }).withMessage('Category name cannot exceed 100 characters.')
+];
+
+/**
+ * Validation rules for user registration
+ */
+export const userRegistrationValidationRules = [
+    body('name')
+        .trim()
+        .notEmpty().withMessage('Name is required.'),
+    body('email')
+        .trim()
+        .notEmpty().withMessage('Email is required.')
+        .isEmail().withMessage('Please enter a valid email address.')
+        .normalizeEmail()
+        .custom(async (value) => {
+            const user = await getUserByEmail(value);
+            if (user) {
+                throw new Error('Email is already registered.');
+            }
+            return true;
+        }),
+    body('password')
+        .trim()
+        .notEmpty().withMessage('Password is required.')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long.')
 ];
 
 /**

@@ -1,0 +1,44 @@
+=== CSE 340 Week 04 Coaching Session Transcript ===
+
+AI: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say 'I don't know' or 'I made a mistake.' That's the fastest way we'll learn today.
+Hola, asumo con mucho gusto mi rol como tu tutor y mentor para esta sesión de la Semana 4. Para iniciar, ¿podrías confirmarme tu nombre completo por favor?
+
+USER: David Perez
+
+AI: ¡Hola, David! Es un gusto trabajar contigo hoy.
+Comencemos con nuestro primer tema: Handling Form Submissions (Manejo de Envíos de Formulario).
+En tu controlador organizations.js (alrededor de las líneas 8 a 18), tienes la función processNewOrganizationForm. ¿Podrías explicarme con tus propias palabras cómo llega la información del formulario desde el navegador del usuario hasta este controlador y cómo la extraes en tu código?
+
+USER: const processNewOrganizationForm = async (req, res) => {
+    const { name, description, contactEmail } = req.body;
+    const logoFilename = 'placeholder-logo.png'; // Use the placeholder logo for all new organizations
+
+    const organizationId = await createOrganization(name, description, contactEmail, logoFilename);
+    
+    // Set a success flash message
+    req.flash('success', 'Organization added successfully!');
+    
+    res.redirect(`/organization/${organizationId}`);
+}; aca vemos como extraigo los valores directamente de las etiquetas name del HTML para guardarlos en la base de datos . { name, description, contactEmail } = req.body; y hago una respuesta si logro acceder a ellos y guardarlos
+
+AI: ¡Excelente explicación, David! Es fundamental que los atributos name en el HTML coincidan exactamente con las propiedades que extraes del objeto req.body en el servidor para que los datos no se pierdan.
+Pasemos a nuestro segundo tema: Forms for Updates (Formularios de Actualización).
+En tu archivo update-project.ejs, utilizas código dinámico de EJS para pre-poblar los campos con la información existente del proyecto. ¿Podrías explicarme cómo insertas el valor existente del título en su respectivo input y cómo determinas dinámicamente mediante EJS qué organización del menú desplegable (select) debe mostrarse como seleccionada (selected)?
+
+USER: value="<%= project.title %>" esto viene de la db y <%= org.organization_id === project.organization_id ? 'selected' : '' %> aca filtra con condiciones la organizacion que se mostrara, si es verdadera EJS escribe el atributo selected dentro de la etiqueta <option>
+
+AI: ¡Así es, David! Ese operador ternario org.organization_id === project.organization_id ? 'selected' : '' es muy limpio y efectivo para inyectar el atributo selected condicionalmente.
+Pasemos a nuestro tercer tema: Sessions and Flash Messages (Sesiones y Mensajes Flash).
+En tu archivo server.js, configuras el middleware de sesiones y registras el middleware de flash. ¿Podrías explicarme con tus propias palabras qué diferencia hay entre guardar información en una variable normal de respuesta (como res.locals) y guardarla en la sesión (req.session), y por qué los mensajes flash dependen de las sesiones para poder mostrarse correctamente después de una redirección (res.redirect)?
+
+USER: res.locals es breve y solo dura durante el ciclo de la peticion y req.session puedo enviar varios con el mismo usuario porque es mas larga res.redirect()con esto enviamos una nueva peticion nueva limpiando todo
+
+AI: ¡Exacto, David! Tienes toda la razón. Como una redirección (res.redirect) le indica al navegador que haga una petición HTTP completamente nueva, cualquier variable en res.locals se limpia y se pierde. Por eso la sesión en req.session es el "puente" perfecto para mantener esos mensajes guardados temporalmente hasta que se renderice la siguiente página.
+Pasemos a nuestro cuarto y último tema: Server-side Validation (Validación en el Servidor).
+En tu archivo validation.js, tienes reglas de validación usando express-validator, como por ejemplo categoryValidationRules que limita la longitud del nombre de la categoría.
+Si ya agregaste atributos HTML5 (como required o maxlength) en el formulario de la vista para validar en el navegador del usuario (cliente), ¿por qué es de vital importancia volver a validar estos mismos datos del lado del servidor antes de guardarlos en la base de datos?
+
+USER: porque entonces cualquier usuario malicioso puede acceder a la informacion por lo que la validacion es una proteccion de la informacion para que ida y vuelta segura garantizando la integridad de la db
+
+AI: ¡Excelente respuesta, David! Tienes toda la razón. El lado del cliente es fácilmente manipulable por usuarios avanzados o herramientas externas, por lo que la validación en el servidor es tu verdadera línea de defensa para mantener la base de datos limpia y segura.
+Con esto, concluimos todos los temas requeridos de nuestra sesión de coaching. ¡Buen trabajo hoy, David!

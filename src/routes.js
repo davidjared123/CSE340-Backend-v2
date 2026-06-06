@@ -24,9 +24,19 @@ import {
     showOrganizationsPage
 } from './controllers/organizations.js';
 import { 
+    showUserRegistrationForm, 
+    processUserRegistrationForm,
+    showLoginForm,
+    processLoginForm,
+    processLogout,
+    requireLogin,
+    showDashboard
+} from './controllers/users.js';
+import { 
     organizationValidationRules, 
     projectValidationRules,
     categoryValidationRules,
+    userRegistrationValidationRules,
     validate 
 } from './middleware/validation.js';
 
@@ -55,5 +65,17 @@ router.post('/new-organization', organizationValidationRules, validate, processN
 router.get('/organization/:id', showOrganizationDetailsPage);
 router.get('/edit-organization/:id', showEditOrganizationForm);
 router.post('/edit-organization/:id', organizationValidationRules, validate, processEditOrganizationForm);
+
+// User registration routes
+router.get('/register', showUserRegistrationForm);
+router.post('/register', userRegistrationValidationRules, validate, processUserRegistrationForm);
+
+// User login routes
+router.get('/login', showLoginForm);
+router.post('/login', processLoginForm);
+router.get('/logout', processLogout);
+
+// Protected dashboard route
+router.get('/dashboard', requireLogin, showDashboard);
 
 export default router;
