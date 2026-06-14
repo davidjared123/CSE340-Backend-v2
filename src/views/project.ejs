@@ -15,8 +15,20 @@
     <% } %>
 </p>
 
+<% if (isLoggedIn) { %>
+    <div class="volunteer-box" style="margin: 2rem 0; padding: 1.5rem; background: #ffffff; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: center;">
+        <% if (isVolunteering) { %>
+            <p class="volunteer-status">✓ You are volunteering for this project.</p>
+            <p><a href="/volunteer/remove/<%= project.project_id %>" class="btn-volunteer-remove">Remove yourself as a volunteer</a></p>
+        <% } else { %>
+            <p><a href="/volunteer/add/<%= project.project_id %>" class="btn-volunteer-add">Volunteer for this project</a></p>
+        <% } %>
+    </div>
+<% } %>
+
 <% if (user && user.role_name === 'admin') { %>
     <p><a href="/edit-project/<%= project.project_id %>">Edit Project Details</a></p>
 <% } %>
+
 
 <%- include('partials/footer') %>

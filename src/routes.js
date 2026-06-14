@@ -5,7 +5,9 @@ import {
     showEditProjectForm, 
     processEditProjectForm,
     showNewProjectForm,
-    processNewProjectForm
+    processNewProjectForm,
+    processAddVolunteer,
+    processRemoveVolunteer
 } from './controllers/projects.js';
 import { 
     showCategoriesPage, 
@@ -79,6 +81,10 @@ router.get('/logout', processLogout);
 
 // Protected dashboard route
 router.get('/dashboard', requireLogin, showDashboard);
+
+// Volunteer routes
+router.get('/volunteer/add/:projectId', requireLogin, processAddVolunteer);
+router.get('/volunteer/remove/:projectId', requireLogin, processRemoveVolunteer);
 
 // Admin users page route
 router.get('/users', requireRole('admin'), showUsersPage);

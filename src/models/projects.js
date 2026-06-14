@@ -1,3 +1,5 @@
+import db from './db.js';
+
 // Note: Since a database connection might not be fully configured yet, 
 // a mock implementation is provided below so the application can still run and render the page.
 // The actual SQL implementation using pg is commented out below.
@@ -222,3 +224,84 @@ export async function createProject(title, description, location, date, organiza
 //     }
 // }
 */
+
+/**
+ * Adds a user as a volunteer for a project.
+ * @param {number|string} projectId - The ID of the project.
+ * @param {number|string} userId - The ID of the user.
+ */
+export async function volunteerForProject(projectId, userId) {
+    try {
+        const query = `
+            INSERT INTO project_volunteers (project_id, user_id)
+            VALUES ($1, $2)
+            ON CONFLICT DO NOTHING;
+        `;
+        await db.query(query, [projectId, userId]);
+    } catch (error) {
+        console.error("Error in volunteerForProject model:", error);
+        throw error;
+    }
+}
+
+/**
+ * Removes a user as a volunteer from a project.
+ * @param {number|string} projectId - The ID of the project.
+ * @param {number|string} userId - The ID of the user.
+ */
+export async function removeVolunteerFromProject(projectId, userId) {
+    try {
+        const query = `
+            DELETE FROM project_volunteers
+            WHERE project_id = $1 AND user_id = $2;
+        `;
+        await db.query(query, [projectId, userId]);
+    } catch (error) {
+        console.error("Error in removeVolunteerFromProject model:", error);
+        throw error;
+    }
+}
+
+/**
+ * Checks if a user is currently volunteering for a project.
+ * @param {number|string} projectId - The ID of the project.
+ * @param {number|string} userId - The ID of the user.
+ * @returns {boolean} True if volunteering, false otherwise.
+ */
+export async function isUserVolunteeredForProject(projectId, userId) {
+    try {
+        const query = `
+            SELECT 1 
+            FROM project_volunteers
+            WHERE project_id = $1 AND user_id = $2;
+        `;
+        const result = await db.query(query, [projectId, userId]);
+        return result.rows.length > 0;
+    } catch (error) {
+        console.error("Error in isUserVolunteeredForProject model:", error);
+        throw error;
+    }
+}
+
+/**
+ * Retrieves the list of projects a user has volunteered for.
+ * Filters the mockProjects list by matching the project IDs from database.
+ * @param {number|string} userId - The ID of the user.
+ * @returns {Array} List of projects.
+ */
+export async function getProjectsVolunteeredByUserId(userId) {
+    try {
+        const query = `
+            SELECT project_id 
+            FROM project_volunteers
+            WHERE user_id = $1;
+        `;
+        const result = await db.query(query, [userId]);
+        const projectIds = result.rows.map(r => r.project_id);
+        return mockProjects.filter(p => projectIds.includes(p.project_id));
+    } catch (error) {
+        console.error("Error in getProjectsVolunteeredByUserId model:", error);
+        throw error;
+    }
+}
+

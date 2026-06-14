@@ -7,9 +7,29 @@
     <p>Name: <%= name %></p>
     <p>Username: <%= email %></p>
 
+    <div style="margin: 2.5rem 0;">
+        <h3 style="border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; color: var(--primary-color);">Projects you have volunteered for:</h3>
+        <% if (typeof volunteeredProjects !== 'undefined' && volunteeredProjects.length > 0) { %>
+            <ul class="volunteer-list">
+                <% volunteeredProjects.forEach(project => { %>
+                    <li class="volunteer-item">
+                        <div class="volunteer-details">
+                            <a href="/project/<%= project.project_id %>" class="volunteer-title"><%= project.title %></a>
+                            <span class="volunteer-meta"><%= project.location %> • <%= project.date.toLocaleDateString() %></span>
+                        </div>
+                        <a href="/volunteer/remove/<%= project.project_id %>?redirect=dashboard" class="btn-volunteer-remove btn-sm" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Remove</a>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p class="no-volunteers">You have not signed up for any volunteer projects yet.</p>
+        <% } %>
+    </div>
+
     <% if (user && user.role_name === 'admin') { %>
-        <p><a href="/users">Manage Users</a></p>
+        <p style="margin-top: 2rem;"><a href="/users">Manage Users</a></p>
     <% } %>
+
 </main>
 
 <%- include('partials/footer') %>

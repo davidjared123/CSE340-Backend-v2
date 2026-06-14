@@ -1,4 +1,12 @@
-import { getUpcomingProjects, getProjectDetails, updateProject, createProject } from '../models/projects.js';
+import { 
+    getUpcomingProjects, 
+    getProjectDetails, 
+    updateProject, 
+    createProject,
+    volunteerForProject,
+    removeVolunteerFromProject,
+    isUserVolunteeredForProject
+} from '../models/projects.js';
 import { getCategoriesByProjectId } from '../models/categories.js';
 import { getAllOrganizations } from '../models/organizations.js';
 
@@ -23,7 +31,18 @@ export async function showProjectDetailsPage(req, res) {
             return res.status(404).send('Project not found');
         }
         const categories = await getCategoriesByProjectId(id);
-        res.render('project', { title: project.title, project, categories });
+
+        let isVolunteering = false;
+        if (req.session && req.session.user) {
+            isVolunteering = await isUserVolunteeredForProject(id, req.session.user.user_id);
+        }
+
+        res.render('project', { 
+            title: project.title, 
+            project, 
+            categories, 
+            isVolunteering 
+        });
     } catch (error) {
         console.error('Error fetching project details:', error);
         res.status(500).send('Internal Server Error');
@@ -95,5 +114,53 @@ export async function processNewProjectForm(req, res) {
         console.error('Error creating project:', error);
         req.flash('error', 'Failed to create project.');
         res.redirect('/new-project');
+    }
+}
+
+/**
+ * Controller to handle volunteering for a project.
+ */
+export async function processAddVolunteer(req, res) {
+    try {
+        const projectId = req.params.projectId;
+        const userId = req.session.user.user_id;
+
+        await volunteerForProject(projectId, userId);
+
+        req.flash('success', 'Thank you for volunteering!');
+        res.redirect(`/project/${projectId}`);
+    } catch (error) {
+        console.error('Error adding volunteer:', error);
+        req.flash('error', 'Failed to sign up for volunteering.');
+        res.redirect(`/project/${req.params.projectId}`);
+    }
+}
+
+/**
+ * Controller to handle removing yourself as a volunteer.
+ */
+export async function processRemoveVolunteer(req, res) {
+    try {
+        const projectId = req.params.projectId;
+        const userId = req.session.user.user_id;
+
+        await removeVolunteerFromProject(projectId, userId);
+
+        req.flash('success', 'You have been removed as a volunteer.');
+
+        // If redirect query is 'dashboard', go back to the dashboard, otherwise go to project details
+        if (req.query.redirect === 'dashboard') {
+            res.redirect('/dashboard');
+        } else {
+            res.redirect(`/project/${projectId}`);
+        }
+    } catch (error) {
+        console.error('Error removing volunteer:', error);
+        req.flash('error', 'Failed to remove volunteer signup.');
+        if (req.query.redirect === 'dashboard') {
+            res.redirect('/dashboard');
+        } else {
+            res.redirect(`/project/${req.params.projectId}`);
+        }
     }
 }

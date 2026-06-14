@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { createUser, authenticateUser, getAllUsers } from '../models/users.js';
+import { getProjectsVolunteeredByUserId } from '../models/projects.js';
 
 /**
  * Renders the user registration form.
@@ -96,13 +97,25 @@ export const requireLogin = (req, res, next) => {
 /**
  * Renders the protected dashboard view.
  */
-export const showDashboard = (req, res) => {
+export const showDashboard = async (req, res) => {
     const user = req.session.user;
-    res.render('dashboard', { 
-        title: 'Dashboard',
-        name: user.name,
-        email: user.email
-    });
+    try {
+        const volunteeredProjects = await getProjectsVolunteeredByUserId(user.user_id);
+        res.render('dashboard', { 
+            title: 'Dashboard',
+            name: user.name,
+            email: user.email,
+            volunteeredProjects
+        });
+    } catch (error) {
+        console.error("Error fetching volunteered projects for dashboard:", error);
+        res.render('dashboard', { 
+            title: 'Dashboard',
+            name: user.name,
+            email: user.email,
+            volunteeredProjects: []
+        });
+    }
 };
 
 /**
